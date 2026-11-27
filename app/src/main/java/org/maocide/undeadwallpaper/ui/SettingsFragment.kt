@@ -131,6 +131,26 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val rootContent = requireActivity().findViewById<ViewGroup>(android.R.id.content)
+        if (rootContent.findViewWithTag<View>("uwu_extra_btn") == null) {
+            val extraBtn = ExtendedFloatingActionButton(requireContext()).apply {
+                tag = "uwu_extra_btn"
+                text = "扩展功能"
+                setOnClickListener {
+                    startActivity(Intent(requireContext(), EnhancedFeaturesActivity::class.java))
+                }
+            }
+            val lp = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM or Gravity.END
+            ).apply {
+                val m = (20 * resources.displayMetrics.density).toInt()
+                setMargins(m, m, m, m * 3)
+            }
+            rootContent.addView(extraBtn, lp)
+        }
+
 
         videoPreviewController = VideoPreviewController(
             binding = binding,
