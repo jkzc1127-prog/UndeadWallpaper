@@ -30,6 +30,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UndeadWallpaper"
+        android:name="org.maocide.undeadwallpaper.features.EnhancedFeaturesActivity"
+        android:exported="false"
+        android:label="扩展功能区"
         >    <!-- tools:targetApi="31" should not be needed anymore and be taken from Gradle-->
         <service
             android:name=".service.UndeadWallpaperService"
