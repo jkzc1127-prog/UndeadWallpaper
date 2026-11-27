@@ -63,9 +63,7 @@ import kotlinx.coroutines.withContext
 import androidx.media3.common.util.UnstableApi
 import kotlin.time.Duration.Companion.milliseconds
 
-import android.content.Intent
 import android.view.Gravity
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.maocide.undeadwallpaper.features.EnhancedFeaturesActivity
