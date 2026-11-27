@@ -65,6 +65,15 @@ import org.maocide.undeadwallpaper.model.KineticEffectType
 
 import kotlin.math.log
 import kotlin.random.Random
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.view.MotionEvent
+import androidx.core.content.ContextCompat
+import androidx.media3.common.Player
+import org.maocide.undeadwallpaper.features.*
+
 
 
 class UndeadWallpaperService : WallpaperService() {
@@ -75,6 +84,34 @@ class UndeadWallpaperService : WallpaperService() {
 
 
     private inner class MyWallpaperEngine : Engine(), WallpaperPlayerListener {
+
+        private var featureConfig = FeatureConfigStore.load(applicationContext)
+        private lateinit var tripleTapController: TripleTapBlackoutController
+        private lateinit var dayNightController: DayNightSwitchController
+        private lateinit var powerFreezeController: PowerFreezeController
+        private lateinit var lockPolicyManager: LockScreenPolicyManager
+        private lateinit var gyroController: GyroParallaxController
+        private val transitionController = TransitionCrossfadeController(featureConfig)
+        private var frozenByPower = false
+        private var frozenByLock = false
+        private val configReceiver = object : BroadcastReceiver() {
+
+    override fun onReceive(context: Context, intent: Intent) {
+        featureConfig = FeatureConfigStore.load(applicationContext)
+        tripleTapController.updateConfig(featureConfig)
+        dayNightController.updateConfig(featureConfig)
+        powerFreezeController.updateConfig(featureConfig)
+        lockPolicyManager.updateConfig(featureConfig)
+        gyroController.updateConfig(featureConfig, isVisible)
+        transitionController.updateConfig(featureConfig)
+    }
+}
+
+private fun syncPlayerPlaybackState() {
+    val shouldPause = frozenByPower || frozenByLock || tripleTapController.shouldPausePlayer || !isVisible
+    // 注意：把下面的 exoPlayer 换成你原代码里实际的播放器变量名（如 player）
+    if (shouldPause) exoPlayer?.pause() else exoPlayer?.play()
+}
 
         private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
